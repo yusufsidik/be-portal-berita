@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BannerResource;
 use App\Models\Banner;
 
 class BannerController extends Controller
@@ -13,7 +14,8 @@ class BannerController extends Controller
      */
     public function index()
     {
-        $banner = Banner::with('news')->get();
+        $banners = Banner::with(['news'])->paginate();
+        return BannerResource::collection($banners);
     }
 
     /**
@@ -21,7 +23,13 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
-      
+        $validate = $request->validate([
+          'news_id' => 'required|integer|exists:news,id']
+        );
+
+        $banner = Banner::create($validate);
+
+        return new BannerResource($banner);
     }
 
     /**

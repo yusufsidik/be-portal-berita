@@ -14,7 +14,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::select(['title','slug'])->get();
+        $categories = Category::select(['title','slug'])->paginate();
         return CategoryResource::collection($categories);
     }
 

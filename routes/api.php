@@ -6,7 +6,8 @@ use App\Http\Controllers\Api\{
     AuthController, 
     AuthorController, 
     CategoryController,
-    NewsController
+    NewsController,
+    BannerController
 };
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -18,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::apiResource('author', AuthorController::class);
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('news', NewsController::class);
+    Route::apiResource('banner', BannerController::class)->except(['update','show']);
 });
 
 

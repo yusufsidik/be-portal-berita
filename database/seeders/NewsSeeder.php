@@ -24,14 +24,14 @@ class NewsSeeder extends Seeder
 
         $authorIds = Author::pluck('id')->toArray();
         $categoryIds = Category::pluck('id')->toArray();
-        $jumlahData = 5;
+        $jumlahData = 50;
 
         for ($i = 0; $i < $jumlahData; $i++){
             News::create([
                 'author_id' => $faker->randomElement($authorIds),
                 'category_id' => $faker->randomElement($categoryIds),
                 'title' => $faker->word(),
-                'slug' => Str::of($faker->word())->slug('-'),
+                'slug' => Str::of($faker->word() . ' '. $faker->word())->slug('-'),
                 'thumbnail' => $faker->word() . '.' .$faker->fileExtension(),
                 'content' => $faker->paragraph(),
                 'is_featured' => $faker->boolean()

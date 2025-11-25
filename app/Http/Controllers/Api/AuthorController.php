@@ -16,7 +16,7 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        $authors = Author::select(['id','name','bio','avatar'])->get();
+        $authors = Author::select(['id','name','bio','avatar'])->paginate();
         return AuthorResource::collection($authors);
     }
 
