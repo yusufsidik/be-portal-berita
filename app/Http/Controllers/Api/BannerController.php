@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BannerResource;
 use App\Models\Banner;
+use Illuminate\Validation\ValidationException;
 
 class BannerController extends Controller
 {
@@ -14,7 +15,7 @@ class BannerController extends Controller
      */
     public function index()
     {
-        $banners = Banner::with(['news'])->paginate();
+        $banners = Banner::with(['news'])->get();
         return BannerResource::collection($banners);
     }
 
@@ -23,13 +24,27 @@ class BannerController extends Controller
      */
     public function store(Request $request)
     {
-        $validate = $request->validate([
-          'news_id' => 'required|integer|exists:news,id']
-        );
 
-        $banner = Banner::create($validate);
+        try {
+            $validate = $request->validate([
+              'news_id' => 'required|integer|exists:news,id']
+            );
+    
+            $banner = Banner::create($validate);
+    
+            return new BannerResource($banner);
 
-        return new BannerResource($banner);
+        } catch (ValidationException $exc) {
+            return response()->json([
+                'message' => "Validation failed.",
+                'errors'=> $exc->errors()
+            ], 422);
+        } catch(\Exception $exc){
+            return response()->json([
+                'message' => "Server Error."
+            ], 500);
+        }
+
     }
 
     /**
@@ -51,8 +66,9 @@ class BannerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Banner $banner)
     {
-        //
+        $banner->delete();
+        return response()->json("Success delete Banner", 200);
     }
 }

@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Author;
-use Illuminate\Support\Facades\Gate;
 
 use App\Http\Resources\AuthorResource;
+use Illuminate\Validation\ValidationException;
 
 class AuthorController extends Controller
 {
@@ -25,15 +25,28 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:128',
-            'bio' => 'required|string|max:255',
-            'avatar' => 'required|string|max:255'
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:128',
+                'bio' => 'required|string|max:255',
+                'avatar' => 'required|string|max:255'
+            ]);
 
-        $author = Author::create($validated);
+            $author = Author::create($validated);
 
-        return new AuthorResource($author); 
+            return new AuthorResource($author); 
+
+        } catch (ValidationException  $exc) {
+            return response()->json([
+                'message' => "Validation failed",
+                'errors' => $exc->errors()
+            ], 422);
+        } catch (\Exception $exc){
+            return response()->json([
+                'message' => 'Server Error'
+            ], 500);
+        }
+        
     }
 
     /**
@@ -49,15 +62,31 @@ class AuthorController extends Controller
      */
     public function update(Request $request, Author $author)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:128',
-            'bio' => 'required|string|max:255',
-            'avatar' => 'required|string|max:255'
-        ]);
 
-        $author->update($validated);
+        try {
 
-        return new AuthorResource($author); 
+            $validated = $request->validate([
+                'name' => 'required|string|max:128',
+                'bio' => 'required|string|max:255',
+                'avatar' => 'required|string|max:255'
+            ]);
+
+            $author->update($validated);
+
+            return new AuthorResource($author); 
+
+        } catch (ValidationException  $exc) {
+            return response()->json([
+                'message' => "Validation failed",
+                'errors' => $exc->errors()
+            ], 422);
+        } catch (\Exception $exc){
+            return response()->json([
+                'message' => 'Server Error'
+            ], 500);
+        }
+
+
     }
 
     /**

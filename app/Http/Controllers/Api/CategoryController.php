@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Resources\CategoryResource;
+use Illuminate\Validation\ValidationException;
 
 class CategoryController extends Controller
 {
@@ -23,14 +24,31 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:50',
-            'slug' => 'required|string|unique:categories,slug'
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:50',
+                'slug' => 'required|string|unique:categories,slug'
+            ]);
 
-        $category = Category::create($validated);
+            $category = Category::create($validated);
 
-        return new CategoryResource($category);
+            return new CategoryResource($category);
+        
+        } catch (ValidationException $exc) {
+            
+            return response()->json([
+                'message' => "Validation failed",
+                'errors' => $exc->errors()
+            ], 422);
+        
+        } catch(\Exception $exc ){
+            
+            return response()->json([
+                'message' => "Server Error",
+            ], 500);
+        }
+
+        
     }
 
     /**
@@ -46,13 +64,29 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:50',
-            'slug' => 'required|string|unique:categories,slug'
-        ]);
+        try {
+            
+            $validated = $request->validate([
+                'title' => 'required|string|max:50',
+                'slug' => 'required|string|unique:categories,slug'
+            ]);
 
-        $category->update($validated);
-        return new CategoryResource($category);
+            $category->update($validated);
+            return new CategoryResource($category);
+
+        } catch (ValidationException $exc) {
+            return response()->json([
+                'message' => "Validation Failed.",
+                'errors' => $exc->errors()
+            ], 422);
+        } catch (\Exception){
+            return response()->json([
+                'message' => "Server Error."
+            ], 500);
+        }
+
+
+        
     }
 
     /**

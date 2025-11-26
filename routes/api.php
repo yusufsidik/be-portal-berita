@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::apiResource('category', CategoryController::class);
     Route::apiResource('news', NewsController::class);
     Route::apiResource('banner', BannerController::class)->except(['update','show']);
+    
 });
 
 

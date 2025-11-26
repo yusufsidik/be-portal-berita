@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\News;
 use App\Http\Resources\NewsResource;
 use App\Http\Requests\{StoreNewsRequest, UpdateNewsRequest};
+use Illuminate\Validation\ValidationException;
 
 class NewsController extends Controller
 {
@@ -24,11 +25,24 @@ class NewsController extends Controller
      */
     public function store(StoreNewsRequest $request)
     {
-        $validated = $request->validated();
+        try {
+            $validated = $request->validated();
 
-        $news = News::create($validated);
+            $news = News::create($validated);
 
-        return new NewsResource($news);
+            return new NewsResource($news);
+
+        } catch (ValidationException  $exc) {
+            return response()->json([
+                'message' => "Validation failed",
+                'errors' => $exc->errors()
+            ], 422);
+        } catch (\Exception $exc){
+            return response()->json([
+                'message' => 'Server Error'
+            ], 500);
+        }
+        
     }
 
     /**

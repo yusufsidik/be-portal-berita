@@ -17,12 +17,10 @@ class BannerResource extends JsonResource
         // return parent::toArray($request);
         return [
             'news_id' => $this->news_id,
-            'news' => [
-                'title' => optional($this->news)->title,
-                'slug' => optional($this->news)->slug,
-                'thumbnail' => optional($this->news)->thumbnail,
-                'content' => optional($this->news)->content
-            ]
+            'title' => optional($this->news)->title,
+            'slug' => optional($this->news)->slug,
+            'thumbnail' => optional($this->news)->thumbnail,
+            'content' => optional($this->news)->content
         ];
     }
 }
