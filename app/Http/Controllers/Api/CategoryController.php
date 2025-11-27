@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateCategoryRequest;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Resources\CategoryResource;
@@ -26,8 +27,8 @@ class CategoryController extends Controller
     {
         try {
             $validated = $request->validate([
-                'title' => 'required|string|max:50',
-                'slug' => 'required|string|unique:categories,slug'
+                'title' => ['required','string','max:50'] ,
+                'slug' => ['required', 'string','unique:categories,slug']
             ]);
 
             $category = Category::create($validated);
@@ -62,14 +63,10 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
         try {
-            
-            $validated = $request->validate([
-                'title' => 'required|string|max:50',
-                'slug' => 'required|string|unique:categories,slug'
-            ]);
+            $validated = $request->validated();
 
             $category->update($validated);
             return new CategoryResource($category);
@@ -84,9 +81,6 @@ class CategoryController extends Controller
                 'message' => "Server Error."
             ], 500);
         }
-
-
-        
     }
 
     /**
