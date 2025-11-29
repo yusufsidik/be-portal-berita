@@ -8,6 +8,8 @@ use App\Http\Resources\NewsResource;
 use App\Http\Requests\{StoreNewsRequest, UpdateNewsRequest};
 use Illuminate\Validation\ValidationException;
 
+use Illuminate\Support\Str;
+
 class NewsController extends Controller
 {
     /**
@@ -26,7 +28,22 @@ class NewsController extends Controller
     public function store(StoreNewsRequest $request)
     {
         try {
+
             $validated = $request->validated();
+
+            // cek apakah ada file gambar thumbnail
+            if ($request->hasFile('thumbnail')){
+                $file = $request->file('thumbnail');
+                $file->store('news_thumbnail','public');
+                
+                // create name for thumbnail
+                $date = now();
+                $thumbnailName = $date->format('dmY') . '-' . Str::random(22) . '.' .  $file->extension();
+    
+                // set thumbnail name
+                $validated['thumbnail'] = $thumbnailName;
+            }
+
 
             $news = News::create($validated);
 

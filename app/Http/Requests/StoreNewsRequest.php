@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\File;
 
 class StoreNewsRequest extends FormRequest
 {
@@ -26,7 +27,12 @@ class StoreNewsRequest extends FormRequest
             'category_id' => ['required','integer','exists:categories,id'],
             'title' => ['required','string','max:255'],
             'slug' => ['required','string','unique:news,slug'],
-            'thumbnail' => ['nullable','string'],
+            'thumbnail' => [
+                'nullable', 
+                'image', 
+                File::types(['jpg','jpeg'])
+                    ->max(1024)
+            ],
             'content' => ['required','string'],
             'is_featured' => ['required','boolean']
         ];
