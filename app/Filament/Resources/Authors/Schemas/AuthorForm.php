@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Authors\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Filament\Forms\Components\{TextInput, Textarea,FileUpload};
 
 class AuthorForm
 {
@@ -12,11 +12,18 @@ class AuthorForm
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->placeholder('Required author ...')
                     ->required(),
-                TextInput::make('bio')
+                TextArea::make('bio')
+                    ->placeholder('Optional ...')
+                    ->columnSpanFull()
                     ->default(null),
-                TextInput::make('avatar')
-                    ->default(null),
+                FileUpload::make('avatar')
+                    ->disk('public')
+                    ->image()
+                    ->previewable()
+                    ->maxSize(1024)
+                    ->default(null)
             ]);
     }
 }

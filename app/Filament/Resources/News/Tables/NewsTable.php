@@ -2,12 +2,8 @@
 
 namespace App\Filament\Resources\News\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
-use Filament\Actions\ViewAction;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\{BulkActionGroup, DeleteBulkAction, EditAction, ViewAction};
+use Filament\Tables\Columns\{ToggleColumn, TextColumn, ImageColumn};
 use Filament\Tables\Table;
 
 class NewsTable
@@ -17,19 +13,12 @@ class NewsTable
         return $table
             ->columns([
                 TextColumn::make('author.name')
-                    ->numeric()
                     ->sortable(),
                 TextColumn::make('category.title')
-                    ->numeric()
                     ->sortable(),
                 TextColumn::make('title')
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('thumbnail')
-                    ->searchable(),
-                IconColumn::make('is_featured')
-                    ->boolean(),
+                ToggleColumn::make('is_featured'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

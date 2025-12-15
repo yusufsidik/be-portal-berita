@@ -4,6 +4,7 @@ namespace App\Filament\Resources\News\Schemas;
 
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Schemas\Schema;
 
 class NewsInfolist
@@ -12,23 +13,28 @@ class NewsInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('author.name')
-                    ->numeric(),
-                TextEntry::make('category.title')
-                    ->numeric(),
+                TextEntry::make('author.name')->label('Author'),
+                TextEntry::make('category.title')->label('Category'),
                 TextEntry::make('title'),
-                TextEntry::make('slug'),
-                TextEntry::make('thumbnail')
-                    ->placeholder('-'),
+                ImageEntry::make('thumbnail')
+                    ->placeholder('-')
+                    ->imageWidth(800)
+                    ->imageHeight(600)
+                    ->extraImgAttributes([
+                        'style' => 'object-fit: fill'
+                    ])
+                    ->disk('public')
+                    ->columnSpanFull(),
                 TextEntry::make('content')
                     ->columnSpanFull(),
                 IconEntry::make('is_featured')
-                    ->boolean(),
+                    ->boolean()
+                    ->columnSpanFull(),
                 TextEntry::make('created_at')
-                    ->dateTime()
+                    ->dateTime('d F Y , H:i:s')
                     ->placeholder('-'),
                 TextEntry::make('updated_at')
-                    ->dateTime()
+                    ->dateTime('d F Y , H:i:s')
                     ->placeholder('-'),
             ]);
     }

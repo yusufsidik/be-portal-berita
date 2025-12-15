@@ -14,10 +14,7 @@ class CategoryInfolist
                 TextEntry::make('title'),
                 TextEntry::make('slug'),
                 TextEntry::make('created_at')
-                    ->dateTime()
-                    ->placeholder('-'),
-                TextEntry::make('updated_at')
-                    ->dateTime()
+                    ->dateTime('d F Y')
                     ->placeholder('-'),
             ]);
     }

@@ -7,6 +7,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Table;
 
 class AuthorsTable
@@ -20,8 +21,9 @@ class AuthorsTable
                 TextColumn::make('bio')
                     ->limit(35, end: ' ...')
                     ->searchable(),
-                TextColumn::make('avatar')
-                    ->searchable(),
+                ImageColumn::make('avatar')
+                    ->circular()
+                    ->disk('public'),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

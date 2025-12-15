@@ -29,7 +29,7 @@ class AuthorController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:128',
                 'bio' => 'required|string|max:255',
-                'avatar' => 'required|string|max:255'
+                'avatar' => 'required|image|string|max:255'
             ]);
 
             $author = Author::create($validated);
@@ -68,7 +68,7 @@ class AuthorController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:128',
                 'bio' => 'required|string|max:255',
-                'avatar' => 'required|string|max:255'
+                'avatar' => 'required|image|string|max:255'
             ]);
 
             $author->update($validated);
