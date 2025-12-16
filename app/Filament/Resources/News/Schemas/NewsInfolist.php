@@ -26,6 +26,8 @@ class NewsInfolist
                     ->disk('public')
                     ->columnSpanFull(),
                 TextEntry::make('content')
+                    // ->html()
+                    ->markdown()
                     ->columnSpanFull(),
                 IconEntry::make('is_featured')
                     ->boolean()
