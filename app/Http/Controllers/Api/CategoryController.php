@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateCategoryRequest;
-use Illuminate\Http\Request;
-use App\Models\Category;
 use App\Http\Resources\CategoryResource;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Cache;
 
 class CategoryController extends Controller
 {
@@ -16,7 +17,10 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::select(['title','slug'])->paginate();
+        $categories = Cache::remember('categories', 3600, function() {
+            return Category::select(['title','slug'])->paginate();
+        });
+        
         return CategoryResource::collection($categories);
     }
 

@@ -1,14 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Http\Controllers\Controller;
-// use Illuminate\Http\Request;
-use App\Models\News;
-use App\Http\Resources\NewsResource;
-use App\Http\Requests\{StoreNewsRequest, UpdateNewsRequest};
-use Illuminate\Validation\ValidationException;
 
+use App\Models\News;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\NewsResource;
+use App\Http\Requests\StoreNewsRequest;
+use App\Http\Requests\UpdateNewsRequest;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
 
 class NewsController extends Controller
 {
@@ -17,8 +18,10 @@ class NewsController extends Controller
      */
     public function index()
     {
-        // $news = News::select(['title','slug','content','category_id','author_id'])->with(['category:id,title','author:id,name'])->get();
-        $news = News::with(['category','author'])->paginate();
+        $news = Cache::remember('news', 3600, function (){
+            return News::with(['category','author'])->paginate();
+        });
+        
         return NewsResource::collection($news);
     }
 
@@ -43,7 +46,6 @@ class NewsController extends Controller
                 // set thumbnail name
                 $validated['thumbnail'] = $thumbnailName;
             }
-
 
             $news = News::create($validated);
 

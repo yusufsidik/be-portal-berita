@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Author;
-
+use App\Http\Controllers\Controller;
 use App\Http\Resources\AuthorResource;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Cache;
 
 class AuthorController extends Controller
 {
@@ -16,7 +16,10 @@ class AuthorController extends Controller
      */
     public function index()
     {
-        $authors = Author::select(['id','name','bio','avatar'])->paginate();
+        $authors = Cache::remember('authors', 3600, function(){
+            return Author::select(['id','name','bio','avatar'])->paginate();
+        });
+
         return AuthorResource::collection($authors);
     }
 
