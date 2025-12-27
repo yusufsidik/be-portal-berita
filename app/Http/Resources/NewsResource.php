@@ -22,7 +22,8 @@ class NewsResource extends JsonResource
             'content' => $this->content,
             'is_featured' => $this->is_featured,
             'category' => optional($this->category)->title,
-            'author' => optional($this->author)->name
+            'author' => optional($this->author)->name,
+            'created_at' => $this->created_at
         ];
     }
 }
